@@ -4,7 +4,7 @@ const { Server: serverSocket } = require('socket.io')
 const { log } = require('./utils')
 
 const PORT = 3000
-const socketEvent = 'messageEvent'
+const messageEvent = 'message'
 
 const app = express()
 const server = http.createServer(app)
@@ -20,9 +20,9 @@ app.get('/', (req, res) => res.sendFile(__dirname + '/index.html'))
 io.on('connect', socket => {
     log(`client ${socket.id} connected from ${socket.client.conn.remoteAddress}`)
 
-    socket.on(socketEvent, message => {
+    socket.on(messageEvent, message => {
         log(message)
-        io.emit(socketEvent, message)
+        io.emit(messageEvent, message)
     })
 })
 
