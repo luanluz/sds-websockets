@@ -11,11 +11,17 @@
 [https://sds-websockets.onrender.com/](https://sds-websockets.onrender.com/)
 
 <h2>📷 Visualização</h2>
+
 ![Aplicação rodando](./_docs/images/sds-websockets.png)
-![Aplicação rodando](./_docs/images/web-socket_logged.png)
-![Aplicação rodando](./_docs/images/web-socket_logged-users.png)
-![Aplicação rodando](./_docs/images/web-socket_user-message.png)
-![Aplicação rodando](./_docs/images/web-socket_user-logout.png)
+-
+![Informação de usuário logado na aplicação](./_docs/images/web-socket_logged.png)
+-
+![Informação de outros usuários logando na aplicação](./_docs/images/web-socket_logged-users.png)
+-
+![Visualização de mensagens](./_docs/images/web-socket_user-message.png)
+-
+![Informação de usuários se desconectando](./_docs/images/web-socket_user-logout.png)
+-
 
 <h2>🧐 Funcionalidades</h2>
 
