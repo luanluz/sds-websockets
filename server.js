@@ -5,6 +5,8 @@ const { log } = require('./utils')
 
 const PORT = 3000
 const messageEvent = 'message'
+const userEvent = 'user'
+const users = []
 
 const app = express()
 const server = http.createServer(app)
@@ -20,9 +22,25 @@ app.get('/', (req, res) => res.sendFile(__dirname + '/index.html'))
 io.on('connect', socket => {
     log(`client ${socket.id} connected from ${socket.client.conn.remoteAddress}`)
 
+    socket.on(userEvent, user => {
+        const loggedUser = {id: socket.id, username: user}
+
+        users.push(loggedUser)
+        socket.emit(userEvent, loggedUser)
+    })
+
     socket.on(messageEvent, message => {
-        log(message)
-        io.emit(messageEvent, message)
+        const currentUser = users.find(user => user.id === socket.id)
+
+        io.emit(messageEvent, {sender: currentUser, message, sentAt: new Date().toLocaleTimeString()})
+    })
+
+    socket.on('disconnect', () => {
+        const disconnectedUser = users.find(user => user.id === socket.id) ?? {}
+        const userPosition = users.indexOf(disconnectedUser)
+
+        users.splice(userPosition, 1)
+        log(`${disconnectedUser.username ?? 'user'} disconnected`)
     })
 })
 

@@ -17,7 +17,10 @@ window.onload = () => {
         socket.emit(event, message)
     }
 
-    // Elements
+    // model
+    const user = {id: null, username: ''}
+
+    // elements
     const formEl = $('form')
     const messageEl = $('#messages')
     const labelEl = $('label[for=message]')
@@ -25,12 +28,35 @@ window.onload = () => {
     // client socket
     const socket = io()
 
+    // waiting for user response
+    socket.on(consts.userEvent, data => {
+        user.id = data?.id
+        user.username = data?.username
+    })
+
     // waiting for messages
-    socket.on(consts.messageEvent, message => messageEl.innerHTML += `
-        <div class="chat chat-end">
-            <div class="chat-bubble">${message}</div>
-        </div>`
-    )
+    socket.on(consts.messageEvent, data => {
+        // check message was sender by current client logged
+        const bubblePostion = data.sender.id === user.id ? 'end' : 'start'
+
+        messageEl.innerHTML += `
+            <div class="chat chat-${bubblePostion}">
+                <div class="chat-image avatar online placeholder">
+                    <div class="bg-neutral-focus text-neutral-content rounded-full w-8">
+                        <span class="text-xs uppercase">
+                            ${data.sender.username.charAt(0)}
+                        </span>
+                    </div>
+                </div>
+                <div class="chat-header">
+                    ${data.sender.username}
+                    <time class="text-xs opacity-50">
+                        ${data.sentAt}
+                    </time>
+                </div>
+                <div class="chat-bubble">${data.message}</div>
+            </div>`
+    })
 
     labelEl.textContent = consts.inputLabelTextUser
 
