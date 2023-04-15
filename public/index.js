@@ -3,18 +3,45 @@ window.onload = () => {
     const consts = {
         inputLabelTextUser: 'Digite seu usuário',
         inputLabelTextMessage: 'Digite sua mensagem',
+        disconnectEvent: 'disconnectUser',
         userEvent: 'user',
-        messageEvent: 'message'
+        messageEvent: 'message',
+        userInfoEvent: 'userInfo'
     }
     const states = {
         wasClicked: false
     }
+    // client socket
+    const socket = io()
 
     // utils
     const $ = document.querySelector.bind(document)
     const sendMessage = message => {
         const event = states.wasClicked ? consts.messageEvent : consts.userEvent
         socket.emit(event, message)
+    }
+    const showNotification = (message, status = 'success') => {
+        const element = noticiationEl(message, status)
+        const ms = 5000
+
+        $('#notification').appendChild(element)
+        setTimeout(() =>  element.parentElement.removeChild(element), ms)
+    }
+    const noticiationEl = (message, status) => {
+        const element = document.createElement('div')
+
+        element.classList.add('fixed', 'md:bottom-3', 'left-3', 'right-3', 'mt-3')
+        element.innerHTML = `
+            <div class="alert alert-${status} shadow-lg w-max mx-auto">
+                <div>
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" class="stroke-current flex-shrink-0 w-6 h-6">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                    </svg>
+                    <span>${message}</span>
+                </div>
+            </div>`
+
+        return element
     }
 
     // model
@@ -25,14 +52,21 @@ window.onload = () => {
     const messageEl = $('#messages')
     const labelEl = $('label[for=message]')
 
-    // client socket
-    const socket = io()
 
     // waiting for user response
     socket.on(consts.userEvent, data => {
         user.id = data?.id
         user.username = data?.username
+
+        showNotification(`Você está conectado como: ${data?.username}`)
+        socket.emit(consts.userInfoEvent, {username: user.username, message: 'conectou'})
     })
+
+    // waiting for user info
+    socket.on(consts.userInfoEvent, data => showNotification(`${data?.username} ${data?.message}`, 'info'))
+
+    // waiting for desconnected user
+    socket.on(consts.disconnectEvent, data => showNotification(data?.message, 'info'))
 
     // waiting for messages
     socket.on(consts.messageEvent, data => {

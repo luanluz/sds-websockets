@@ -6,6 +6,7 @@ const { log } = require('./utils')
 const PORT = 3000
 const messageEvent = 'message'
 const userEvent = 'user'
+const userInfoEvent = 'userInfo'
 const users = []
 
 const app = express()
@@ -29,6 +30,10 @@ io.on('connect', socket => {
         socket.emit(userEvent, loggedUser)
     })
 
+    socket.on(userInfoEvent, info => {
+        socket.broadcast.emit(userInfoEvent, info)
+    })
+
     socket.on(messageEvent, message => {
         const currentUser = users.find(user => user.id === socket.id)
 
@@ -41,6 +46,7 @@ io.on('connect', socket => {
 
         users.splice(userPosition, 1)
         log(`${disconnectedUser.username ?? 'user'} disconnected`)
+        io.emit('disconnectUser', {message: `${disconnectedUser.username ?? 'usuário'} se desconectou`})
     })
 })
 
