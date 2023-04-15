@@ -10,7 +10,11 @@ window.onload = () => {
     const socket = io()
 
     // waiting for messages
-    socket.on(socketEvent, message => $('#messages').innerHTML += `<li>${message}</li>`)
+    socket.on(socketEvent, message => $('#messages').innerHTML += `
+        <div class="chat chat-end">
+            <div class="chat-bubble">${message}</div>
+        </div>`
+    )
 
     // submit form
     $('form').addEventListener('submit', event => {
@@ -20,7 +24,7 @@ window.onload = () => {
 
         if (messageField.value)
             sendMessage(messageField.value)
-        
+
         messageField.value = ''
         messageField.focus()
     })

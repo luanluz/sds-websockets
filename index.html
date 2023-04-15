@@ -5,17 +5,49 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chat</title>
+    <link href="https://cdn.jsdelivr.net/npm/daisyui@2.51.5/dist/full.css" rel="stylesheet" type="text/css" />
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <form>
-        <ul id="messages"></ul>
+<body data-theme="light">
+    <section class="flex flex-col justify-center antialiased bg-white text-gray-600 min-h-screen p-4">
+        <div class="h-full">
+            <div class="card max-w-[520px] mx-auto bg-white border rounded-lg shadow-sm overflow-hidden">
+                <div class="border-b px-8 py-4">
+                    <h2 class="card-title mb-2">
+                        Web Sockets
+                    </h2>
+                    <p class="text-xs">
+                        Aplicação de Mensagens Instantâneas utilizando
+                        WebSocket com Node.js desenvolvida na disciplina
+                        de Sistemas Distribuídos e Soa, TSI, IFTO - Palmas.
+                    </p>
+                </div>
 
-        <label for="message">
-            Digite sua mensagem
-            <input type="text" id="message" name="message">
-        </label>
-        <button type="submit">Enviar</button>
-    </form>
+                <div id="messages" class="bg-gray-50 p-8 overflow-y-auto h-80"></div>
+
+                <form class="border-t px-8 pt-4 pb-6">
+                    <div class="form-control">
+                        <label class="label" for="message">
+                            <span class="label-text">
+                                Digite sua mensagem
+                            </span>
+                        </label>
+                        <label class="input-group">
+                            <input
+                                id="message"
+                                type="text"
+                                placeholder="Mensagem..."
+                                class="input input-bordered w-full"
+                            />
+                            <button class="btn">
+                                Enviar
+                            </button>
+                        </label>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </section>
 
     <script src="/socket.io/socket.io.js"></script>
     <script src="index.js"></script>
