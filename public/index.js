@@ -6,7 +6,8 @@ window.onload = () => {
         disconnectEvent: 'disconnectUser',
         userEvent: 'user',
         messageEvent: 'message',
-        userInfoEvent: 'userInfo'
+        userInfoEvent: 'userInfo',
+        statusEvent: 'status'
     }
     const states = {
         wasClicked: false
@@ -43,14 +44,31 @@ window.onload = () => {
 
         return element
     }
+    // copy and past from: https://www.joshwcomeau.com/snippets/javascript/debounce/
+    const debounce = (callback, wait) => {
+        let timeoutId = null
+
+        return (...args) => {
+            window.clearTimeout(timeoutId)
+            timeoutId = window.setTimeout(() => {
+                callback.apply(null, args)
+            }, wait)
+        }
+    }
+    const sendStatusMessage = debounce(event => {
+        if (event.target.value.length && labelEl.textContent != consts.inputLabelTextUser) {
+            socket.emit(consts.userInfoEvent, {username: user.username, message: 'está digitando...'})
+        }
+    }, 1000);
 
     // model
     const user = {id: null, username: ''}
 
     // elements
     const formEl = $('form')
-    const messageEl = $('#messages')
+    const messagesEl = $('#messages')
     const labelEl = $('label[for=message]')
+    const textFieldMessage = $('#message')
 
 
     // waiting for user response
@@ -73,7 +91,7 @@ window.onload = () => {
         // check message was sender by current client logged
         const bubblePostion = data.sender.id === user.id ? 'end' : 'start'
 
-        messageEl.innerHTML += `
+        messagesEl.innerHTML += `
             <div class="chat chat-${bubblePostion}">
                 <div class="chat-image avatar online placeholder">
                     <div class="bg-neutral-focus text-neutral-content rounded-full w-8">
@@ -93,6 +111,9 @@ window.onload = () => {
     })
 
     labelEl.textContent = consts.inputLabelTextUser
+
+    // listen keyboard
+    textFieldMessage.addEventListener('keyup', sendStatusMessage)
 
     // submit form
     formEl.addEventListener('submit', event => {
