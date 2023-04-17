@@ -30,6 +30,8 @@ Aqui estão algumas das melhores características do projeto:
 *   Identificação do usuário
 *   Envio e recebimento de mensagens em tempo real
 *   Identificação visual de usuários no chat
+*   Notificação de informações dos usuários
+*   Exibição de status 'digitando'
 
 <h2>🛠️ Etapas de instalação:</h2>
 
